@@ -35,8 +35,36 @@ public class HashSimulator {
     }
 
     public int[] runHashSimulation(String[] hashKeys, int tableSize) {
+        int collisionCount = 0;
+        int probeCount = 0;
 
-        return new int[3];
+        for (String hashKey : hashKeys) {
+            HashMap<Integer, String> h1HashTable = new HashMap<>(tableSize);
+            collisionCount = 0;
+            probeCount = 0;
+
+            for (char c : hashKey.toUpperCase().toCharArray()) {
+                int charValue = alphabetMap.get(c);
+                int hashValue = (charValue + probeCount) % 60;
+                hashValue = hashValue % tableSize;
+
+                while (h1HashTable.containsKey(hashValue)) {
+                    collisionCount++;
+                    probeCount++;
+                    hashValue = (hashValue + 1) % tableSize;
+                }
+
+                h1HashTable.put(hashValue, String.valueOf(c));
+                probeCount++;
+            }
+
+            System.out.println("Result for " + hashKey + ":");
+            System.out.println("Collision Count: " + collisionCount);
+            System.out.println("Probe Count: " + probeCount + "\n");
+        }
+
+        int[] counts = {collisionCount, probeCount};
+        return counts;
     }
 
     /**
@@ -138,18 +166,16 @@ public class HashSimulator {
      * @param args - command line arguments
      */
     public static void main(String[] args) {
-// Testing purposes, won't be marked.
+        // Testing purposes, won't be marked.
         HashSimulator hashTable = new HashSimulator();
-        int tableSize = 10; // Set your desired table size
+        int tableSize = 10;
 
-        // Read names from the "37names.txt" file and hash them using H1 method
         try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
             String line;
             while ((line = br.readLine()) != null) {
-                // Trim the line to remove leading/trailing whitespaces
                 String input = line.trim();
-                int result = hashTable.H1(input, tableSize);
-                System.out.println("Result for " + input + ": " + result + "\n");
+                String[] inputs = {input}; // Wrap the input in an array for runHashSimulation method
+                hashTable.runHashSimulation(inputs, tableSize);
             }
         } catch (IOException e) {
             e.printStackTrace();
