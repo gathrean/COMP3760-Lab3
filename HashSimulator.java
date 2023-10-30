@@ -14,6 +14,11 @@ import java.util.HashMap;
 public class HashSimulator {
 
     /**
+     * The name of the file to read from
+     */
+    public static final String FILENAME = "5575names.txt";
+
+    /**
      * Alphabet hash map
      */
     private HashMap<Character, Integer> alphabetMap;
@@ -133,11 +138,21 @@ public class HashSimulator {
      * @param args - command line arguments
      */
     public static void main(String[] args) {
-        // Testing purposes, won't be marked.
+// Testing purposes, won't be marked.
         HashSimulator hashTable = new HashSimulator();
         int tableSize = 10; // Set your desired table size
-        String input = "BENNY"; // Input string
-        int result = hashTable.H1(input, tableSize);
-        System.out.println("Result: " + result);
+
+        // Read names from the "37names.txt" file and hash them using H1 method
+        try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Trim the line to remove leading/trailing whitespaces
+                String input = line.trim();
+                int result = hashTable.H1(input, tableSize);
+                System.out.println("Result for " + input + ": " + result + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
