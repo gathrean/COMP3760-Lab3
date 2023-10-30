@@ -252,28 +252,4 @@ public class HashSimulator {
         return listOfStrings.toArray(new String[0]);
     }
 
-    /**
-     * Main method
-     *
-     * @param args - command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-        HashSimulator hashTable = new HashSimulator();
-        String[] data;
-
-        data = readStrings(FILENAME1);
-        int[] result = hashTable.runHashSimulation(data, data.length);
-
-        System.out.println(FILENAME1 + ": [" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ", " + result[4] + ", " + result[5] + "]");
-
-        data = readStrings(FILENAME2);
-        result = hashTable.runHashSimulation(data, data.length);
-
-        System.out.println(FILENAME2 + ": [" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ", " + result[4] + ", " + result[5] + "]");
-
-        data = readStrings(FILENAME3);
-        result = hashTable.runHashSimulation(data, data.length);
-
-        System.out.println(FILENAME3 + ": [" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ", " + result[4] + ", " + result[5] + "]");
-    }
 }
