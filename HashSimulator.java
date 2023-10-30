@@ -1,3 +1,6 @@
+// Name: Gathrean Dela Cruz
+// ID: A01167248
+
 public class HashSimulator {
 
 
