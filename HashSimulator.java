@@ -64,32 +64,32 @@ public class HashSimulator {
      * the sum of letters is 2+5+14+14+25.
      * </p>
      *
-     * @param hashKey   - the key to hash
-     * @param tableSize - the size of the hash table
+     * @param name   - the key to hash
+     * @param htSize - the size of the hash table
      * @return The hash value of 60 mod HT size
      */
-    public int H1(String hashKey, int tableSize) {
+    public int H1(String name, int htSize) {
 
         // Create a new, empty hash table of the given size
         //      (hash table is also an array of Strings)
-        HashMap<Integer, String> h1HashTable = new HashMap<>(tableSize);
+        HashMap<Integer, String> h1HashTable = new HashMap<>(htSize);
 
         int collisionCount = 0; // Set collision count to 0
         int probeCount = 0; // Set probe count to 0
 
         // Calculate hash value using H1 function and take modulo 60
-        for (char c : hashKey.toUpperCase().toCharArray()) {
+        for (char c : name.toUpperCase().toCharArray()) {
             int charValue = alphabetMap.get(c);
             int hashValue = (charValue + probeCount) % 60;
 
             // Calculate the hash value modulo tableSize (HT size)
-            hashValue = hashValue % tableSize;
+            hashValue = hashValue % htSize;
 
             // Handle collisions with linear probing
             while (h1HashTable.containsKey(hashValue)) {
                 collisionCount++;
                 probeCount++;
-                hashValue = (hashValue + 1) % tableSize;
+                hashValue = (hashValue + 1) % htSize;
             }
 
             // Store key in hash table
@@ -97,10 +97,10 @@ public class HashSimulator {
             probeCount++;
         }
 
-        System.out.println("Result for " + hashKey + " (H1):");
+        System.out.println("Result for " + name + " (H1):");
         System.out.println("Collision Count: " + collisionCount + "\t Probe Count: " + probeCount + "\n");
 
-        return tableSize;
+        return htSize;
     }
 
     /**
@@ -118,13 +118,13 @@ public class HashSimulator {
      * and return value will be 11680060 mod HT size.
      * </p>
      *
-     * @param hashKey   - the key to hash
-     * @param tableSize - the size of the hash table
+     * @param name   - the key to hash
+     * @param htSize - the size of the hash table
      * @return The hash value of the key
      */
-    public int H2(String hashKey, int tableSize) {
+    public int H2(String name, int htSize) {
 
-        return tableSize;
+        return htSize;
     }
 
     /**
@@ -134,13 +134,13 @@ public class HashSimulator {
      * Invent your own hash function!
      * </p>
      *
-     * @param hashKey   - the key to hash
-     * @param tableSize - the size of the hash table
+     * @param name   - the key to hash
+     * @param htSize - the size of the hash table
      * @return The hash value of the key
      */
-    public int H3(String hashKey, int tableSize) {
+    public int H3(String name, int htSize) {
 
-        return tableSize;
+        return htSize;
     }
 
     /**
