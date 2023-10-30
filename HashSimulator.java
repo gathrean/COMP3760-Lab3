@@ -3,11 +3,9 @@
 // Set: 3G
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,21 +14,10 @@ import java.util.List;
  */
 public class HashSimulator {
 
+    // The names of the files to read
     public static final String FILENAME1 = "37names.txt";
     public static final String FILENAME2 = "641names.txt";
     public static final String FILENAME3 = "5575names.txt";
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    /**
-     * HashSimulator Class Constructor
-     */
-    public HashSimulator() {
-        HashMap<Character, Integer> alphabetMap = new HashMap<>();
-        char[] alphabet = ALPHABET.toCharArray();
-        for (int i = 0; i < alphabet.length; i++) {
-            alphabetMap.put(alphabet[i], i + 1);
-        }
-    }
 
     /**
      * Runs the Hash Simulation
@@ -62,6 +49,11 @@ public class HashSimulator {
         return new int[]{h1Collision, h1Probes, h2Collision, h2Probes, h3Collision, h3Probes};
     }
 
+    /**
+     * HELPER FUNCTION: Creates an ArrayList of the alphabet
+     *
+     * @return - an ArrayList of the alphabet
+     */
     private ArrayList<Character> createAlphabetArrayList() {
         ArrayList<Character> alphabet = new ArrayList<>();
         char[] alphabetArray = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
@@ -160,7 +152,7 @@ public class HashSimulator {
     }
 
     /**
-     * Runs the H1 hash simulation
+     * HELPER FUNCTION: Runs the H1 hash simulation
      *
      * @param name   - the keys to hash
      * @param htSize - the size of the hash table
@@ -188,7 +180,7 @@ public class HashSimulator {
     }
 
     /**
-     * Runs the H2 hash simulation
+     * HELPER FUNCTION: Runs the H2 hash simulation
      *
      * @param name   - the keys to hash
      * @param htSize - the size of the hash table
@@ -216,7 +208,7 @@ public class HashSimulator {
     }
 
     /**
-     * Runs the H3 hash simulation
+     * HELPER FUNCTION: Runs the H3 hash simulation
      *
      * @param name   - the keys to hash
      * @param htSize - the size of the hash table
