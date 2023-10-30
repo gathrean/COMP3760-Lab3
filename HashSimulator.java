@@ -19,6 +19,9 @@ public class HashSimulator {
     // Alphabet hash map
     private final HashMap<Character, Integer> alphabetMap;
 
+    private int h1CollisionCount = 0; // Declare as instance variable
+    private int h1ProbeCount = 0; // Declare as instance variable
+
     // Alphabet hash map constructor
     public HashSimulator() {
         alphabetMap = new HashMap<>();
@@ -36,19 +39,15 @@ public class HashSimulator {
      * @return - An array of 6 ints: collision and probes with H1(), H2(), and H3()
      */
     public int[] runHashSimulation(String[] hashKeys, int tableSize) {
-        int h1CollisionCount = 0;
-        int h1ProbeCount = 0;
-        int h2CollisionCount = 0;
-        int h2ProbeCount = 0;
-        int h3CollisionCount = 0;
-        int h3ProbeCount = 0;
+        h1CollisionCount = 0; // Reset instance variable
+        h1ProbeCount = 0; // Reset instance variable
 
         for (String key : hashKeys) {
             H1(key, tableSize);
         }
 
         // Return counts for further analysis if needed
-        return new int[]{h1CollisionCount, h1ProbeCount, h2CollisionCount, h2ProbeCount, h3CollisionCount, h3ProbeCount};
+        return new int[]{h1CollisionCount, h1ProbeCount, 0, 0, 0, 0};
     }
 
     /**
@@ -97,8 +96,12 @@ public class HashSimulator {
             probeCount++;
         }
 
-        System.out.println("Result for " + name + " (H1):");
-        System.out.println("Collision Count: " + collisionCount + "\t Probe Count: " + probeCount + "\n");
+        // Update instance variables with collision and probe counts
+        h1CollisionCount += collisionCount;
+        h1ProbeCount += probeCount;
+//
+//        System.out.println("Result for " + name + " (H1):");
+//        System.out.println("Collision Count: " + collisionCount + "\t Probe Count: " + probeCount + "\n");
 
         return htSize;
     }
@@ -149,7 +152,6 @@ public class HashSimulator {
      * @param args - command line arguments
      */
     public static void main(String[] args) {
-        // Testing purposes, won't be marked.
         HashSimulator hashTable = new HashSimulator();
         int tableSize = 10;
 
