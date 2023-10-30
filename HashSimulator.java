@@ -16,7 +16,7 @@ public class HashSimulator {
     /**
      * The name of the file to read from
      */
-    public static final String FILENAME = "5575names.txt";
+    public static final String FILENAME = "37names.txt";
 
     /**
      * Alphabet hash map
@@ -34,38 +34,77 @@ public class HashSimulator {
         }
     }
 
+    /**
+     * Runs the Hash Simulation
+     *
+     * @param hashKeys  - the keys to hash
+     * @param tableSize - the size of the hash table
+     * @return - An array of 6 ints: collision and probes with H1(), H2(), and H3()
+     */
     public int[] runHashSimulation(String[] hashKeys, int tableSize) {
+        int h1CollisionCount = 0;
+        int h1ProbeCount = 0;
+        int h2CollisionCount = 0;
+        int h2ProbeCount = 0;
+        int h3CollisionCount = 0;
+        int h3ProbeCount = 0;
+
+        for (String hashKey : hashKeys) {
+            // H1
+            HashMap<Integer, String> h1HashTable = new HashMap<>(tableSize);
+            int[] h1Counts = simulateHashing(hashKey, tableSize, h1HashTable);
+            h1CollisionCount += h1Counts[0];
+            h1ProbeCount += h1Counts[1];
+
+            // H2 and H3: Implement H2 and H3 hash functions and update the counts similarly
+            // For now, we'll just initialize the counts to 0 as placeholders
+            int[] h2Counts = {0, 0};
+            int[] h3Counts = {0, 0};
+
+            h2CollisionCount += h2Counts[0];
+            h2ProbeCount += h2Counts[1];
+            h3CollisionCount += h3Counts[0];
+            h3ProbeCount += h3Counts[1];
+
+            // Print results for each hash key
+            System.out.println("Result for " + hashKey + ":");
+            System.out.println("H1\tCollision Count: " + h1CollisionCount + "\t Probe Count: " + h1ProbeCount);
+            System.out.println("H2\tCollision Count: " + h2CollisionCount + "\t Probe Count: " + h2ProbeCount);
+            System.out.println("H3\tCollision Count: " + h3CollisionCount + "\t Probe Count: " + h3ProbeCount);
+            System.out.println("\n");
+        }
+
+        // Return counts for further analysis if needed
+        int[] counts = {h1CollisionCount, h1ProbeCount, h2CollisionCount, h2ProbeCount, h3CollisionCount, h3ProbeCount};
+        return counts;
+    }
+
+    private int[] simulateHashing(String inputKey, int tableSize, HashMap<Integer, String> hashTable) {
         int collisionCount = 0;
         int probeCount = 0;
 
-        for (String hashKey : hashKeys) {
-            HashMap<Integer, String> h1HashTable = new HashMap<>(tableSize);
-            collisionCount = 0;
-            probeCount = 0;
+        // Calculate hash value using H1 function and take modulo 60
+        for (char c : inputKey.toUpperCase().toCharArray()) {
+            int charValue = alphabetMap.get(c);
+            int hashValue = (charValue + probeCount) % 60;
+            hashValue = hashValue % tableSize;
 
-            for (char c : hashKey.toUpperCase().toCharArray()) {
-                int charValue = alphabetMap.get(c);
-                int hashValue = (charValue + probeCount) % 60;
-                hashValue = hashValue % tableSize;
-
-                while (h1HashTable.containsKey(hashValue)) {
-                    collisionCount++;
-                    probeCount++;
-                    hashValue = (hashValue + 1) % tableSize;
-                }
-
-                h1HashTable.put(hashValue, String.valueOf(c));
+            // Handle collisions with linear probing
+            while (hashTable.containsKey(hashValue)) {
+                collisionCount++;
                 probeCount++;
+                hashValue = (hashValue + 1) % tableSize;
             }
 
-            System.out.println("Result for " + hashKey + ":");
-            System.out.println("Collision Count: " + collisionCount);
-            System.out.println("Probe Count: " + probeCount + "\n");
+            // Store key in hash table
+            hashTable.put(hashValue, String.valueOf(c));
+            probeCount++;
         }
 
         int[] counts = {collisionCount, probeCount};
         return counts;
     }
+
 
     /**
      * Hash function 1
