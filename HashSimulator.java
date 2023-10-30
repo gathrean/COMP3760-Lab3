@@ -13,19 +13,13 @@ import java.util.HashMap;
  */
 public class HashSimulator {
 
-    /**
-     * The name of the file to read from
-     */
+    // The name of the input file to read from
     public static final String FILENAME = "37names.txt";
 
-    /**
-     * Alphabet hash map
-     */
-    private HashMap<Character, Integer> alphabetMap;
+    // Alphabet hash map
+    private final HashMap<Character, Integer> alphabetMap;
 
-    /**
-     * Alphabet hash map constructor
-     */
+    // Alphabet hash map constructor
     public HashSimulator() {
         alphabetMap = new HashMap<>();
         char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
@@ -49,62 +43,13 @@ public class HashSimulator {
         int h3CollisionCount = 0;
         int h3ProbeCount = 0;
 
-        for (String hashKey : hashKeys) {
-            // H1
-            HashMap<Integer, String> h1HashTable = new HashMap<>(tableSize);
-            int[] h1Counts = simulateHashing(hashKey, tableSize, h1HashTable);
-            h1CollisionCount += h1Counts[0];
-            h1ProbeCount += h1Counts[1];
-
-            // H2 and H3: Implement H2 and H3 hash functions and update the counts similarly
-            // For now, we'll just initialize the counts to 0 as placeholders
-            int[] h2Counts = {0, 0};
-            int[] h3Counts = {0, 0};
-
-            h2CollisionCount += h2Counts[0];
-            h2ProbeCount += h2Counts[1];
-            h3CollisionCount += h3Counts[0];
-            h3ProbeCount += h3Counts[1];
-
-            // Print results for each hash key
-            System.out.println("Result for " + hashKey + ":");
-            System.out.println("H1\tCollision Count: " + h1CollisionCount + "\t Probe Count: " + h1ProbeCount);
-            System.out.println("H2\tCollision Count: " + h2CollisionCount + "\t Probe Count: " + h2ProbeCount);
-            System.out.println("H3\tCollision Count: " + h3CollisionCount + "\t Probe Count: " + h3ProbeCount);
-            System.out.println("\n");
+        for (String key : hashKeys) {
+            H1(key, tableSize);
         }
 
         // Return counts for further analysis if needed
-        int[] counts = {h1CollisionCount, h1ProbeCount, h2CollisionCount, h2ProbeCount, h3CollisionCount, h3ProbeCount};
-        return counts;
+        return new int[]{h1CollisionCount, h1ProbeCount, h2CollisionCount, h2ProbeCount, h3CollisionCount, h3ProbeCount};
     }
-
-    private int[] simulateHashing(String inputKey, int tableSize, HashMap<Integer, String> hashTable) {
-        int collisionCount = 0;
-        int probeCount = 0;
-
-        // Calculate hash value using H1 function and take modulo 60
-        for (char c : inputKey.toUpperCase().toCharArray()) {
-            int charValue = alphabetMap.get(c);
-            int hashValue = (charValue + probeCount) % 60;
-            hashValue = hashValue % tableSize;
-
-            // Handle collisions with linear probing
-            while (hashTable.containsKey(hashValue)) {
-                collisionCount++;
-                probeCount++;
-                hashValue = (hashValue + 1) % tableSize;
-            }
-
-            // Store key in hash table
-            hashTable.put(hashValue, String.valueOf(c));
-            probeCount++;
-        }
-
-        int[] counts = {collisionCount, probeCount};
-        return counts;
-    }
-
 
     /**
      * Hash function 1
@@ -152,9 +97,8 @@ public class HashSimulator {
             probeCount++;
         }
 
-        // Print collision and probe counts for testing purposes
-        System.out.println("Collision Count: " + collisionCount);
-        System.out.println("Probe Count: " + probeCount);
+        System.out.println("Result for " + hashKey + " (H1):");
+        System.out.println("Collision Count: " + collisionCount + "\t Probe Count: " + probeCount + "\n");
 
         return tableSize;
     }
