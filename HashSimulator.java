@@ -16,15 +16,16 @@ import java.util.List;
  */
 public class HashSimulator {
 
-    public static final String FILENAME = "37names.txt";
+    public static final String FILENAME1 = "37names.txt";
+    public static final String FILENAME2 = "641names.txt";
+    public static final String FILENAME3 = "5575names.txt";
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final HashMap<Character, Integer> alphabetMap;
 
     /**
      * HashSimulator Class Constructor
      */
     public HashSimulator() {
-        alphabetMap = new HashMap<>();
+        HashMap<Character, Integer> alphabetMap = new HashMap<>();
         char[] alphabet = ALPHABET.toCharArray();
         for (int i = 0; i < alphabet.length; i++) {
             alphabetMap.put(alphabet[i], i + 1);
@@ -43,12 +44,22 @@ public class HashSimulator {
         int[] result;
         int h1Collision, h1Probes, h2Collision, h2Probes, h3Collision, h3Probes;
 
+        // Simulating H1
         result = runH1(hashKeys, tableSize);
         h1Collision = result[0];
         h1Probes = result[1];
 
-        // Return counts for further analysis if needed
-        return new int[]{h1Collision, h1Probes, 0, 0, 0, 0};
+        // Simulating H2
+        result = runH2(hashKeys, tableSize);
+        h2Collision = result[0];
+        h2Probes = result[1];
+
+        // Simulating H3
+        result = runH3(hashKeys, tableSize);
+        h3Collision = result[0];
+        h3Probes = result[1];
+
+        return new int[]{h1Collision, h1Probes, h2Collision, h2Probes, h3Collision, h3Probes};
     }
 
     private ArrayList<Character> createAlphabetArrayList() {
@@ -59,28 +70,6 @@ public class HashSimulator {
         }
         return alphabet;
     }
-
-    private int[] runH1(String[] name, int htSize) {
-        int h1Collision = 0, h1Probes = 0;
-
-        String[] hashSimulator = new String[htSize];
-
-        int hashedKey = 0;
-
-        for (int i = 0; i < name.length; i++) {
-            hashedKey = H1(name[i], htSize);
-            if (hashSimulator[hashedKey] != null) ++h1Collision;
-            while (hashSimulator[hashedKey] != null) {
-                ++hashedKey;
-                ++h1Probes;
-                if (hashedKey >= htSize) hashedKey = 0;
-            }
-            hashSimulator[hashedKey] = name[i];
-        }
-
-        return new int[]{h1Collision, h1Probes};
-    }
-
 
     /**
      * Hash function 1
@@ -105,7 +94,7 @@ public class HashSimulator {
         long sum = 0;
 
         for (int i = 0; i < name.length(); i++) {
-            sum += alphabet.get(name.charAt(i));
+            sum += alphabet.indexOf(name.charAt(i)) + 1;
         }
 
         return (int) (sum % htSize);
@@ -136,7 +125,7 @@ public class HashSimulator {
         long sum = 0;
 
         for (int i = 0; i < name.length(); i++) {
-            sum += (long) (alphabet.get(name.charAt(i)) * Math.pow(26, i));
+            sum += (long) ((alphabet.indexOf(name.charAt(i)) + 1) * Math.pow(26, i));
         }
 
         return (int) (sum % htSize);
@@ -146,7 +135,9 @@ public class HashSimulator {
      * Hash function 3
      *
      * <p>
-     * Invent your own hash function!
+     * Custom hash function:
+     * Sum the ASCII values of characters in the input string,
+     * take the length of the string, and multiply them.
      * </p>
      *
      * @param name   - the key to hash
@@ -154,27 +145,119 @@ public class HashSimulator {
      * @return The hash value of the key
      */
     public int H3(String name, int htSize) {
-        ArrayList<Character> alphabet = createAlphabetArrayList();
+        int sum = 0;
 
-        return htSize;
+        // Calculate sum of ASCII values of characters in the input string
+        for (char c : name.toCharArray()) {
+            sum += c;
+        }
+
+        // Multiply the sum by the length of the input string
+        int hashValue = sum * name.length();
+
+        // Take the result mod HT size
+        return hashValue % htSize;
     }
 
     /**
-     * @param fileName: text file containing a list of names, one per line
-     * @return
-     * @throws IOException
+     * Runs the H1 hash simulation
+     *
+     * @param name   - the keys to hash
+     * @param htSize - the size of the hash table
+     * @return - An array of 2 ints: collision and probes with H1()
+     */
+    private int[] runH1(String[] name, int htSize) {
+        int h1Collision = 0, h1Probes = 0;
+
+        String[] hashSimulator = new String[htSize];
+
+        int hashedKey;
+
+        for (String s : name) {
+            hashedKey = H1(s, htSize);
+            if (hashSimulator[hashedKey] != null) ++h1Collision;
+            while (hashSimulator[hashedKey] != null) {
+                ++hashedKey;
+                ++h1Probes;
+                if (hashedKey >= htSize) hashedKey = 0;
+            }
+            hashSimulator[hashedKey] = s;
+        }
+
+        return new int[]{h1Collision, h1Probes};
+    }
+
+    /**
+     * Runs the H2 hash simulation
+     *
+     * @param name   - the keys to hash
+     * @param htSize - the size of the hash table
+     * @return - An array of 2 ints: collision and probes with H2()
+     */
+    private int[] runH2(String[] name, int htSize) {
+        int h2Collision = 0, h2Probes = 0;
+
+        String[] hashSimulator = new String[htSize];
+
+        int hashedKey;
+
+        for (String s : name) {
+            hashedKey = H2(s, htSize);
+            if (hashSimulator[hashedKey] != null) ++h2Collision;
+            while (hashSimulator[hashedKey] != null) {
+                ++hashedKey;
+                ++h2Probes;
+                if (hashedKey >= htSize) hashedKey = 0;
+            }
+            hashSimulator[hashedKey] = s;
+        }
+
+        return new int[]{h2Collision, h2Probes};
+    }
+
+    /**
+     * Runs the H3 hash simulation
+     *
+     * @param name   - the keys to hash
+     * @param htSize - the size of the hash table
+     * @return - An array of 2 ints: collision and probes with H3()
+     */
+    private int[] runH3(String[] name, int htSize) {
+        int h3Collision = 0, h3Probes = 0;
+
+        String[] hashSimulator = new String[htSize];
+
+        int hashedKey;
+
+        for (String s : name) {
+            hashedKey = H3(s, htSize);
+            if (hashSimulator[hashedKey] != null) ++h3Collision;
+            while (hashSimulator[hashedKey] != null) {
+                ++hashedKey;
+                ++h3Probes;
+                if (hashedKey >= htSize) hashedKey = 0;
+            }
+            hashSimulator[hashedKey] = s;
+        }
+
+        return new int[]{h3Collision, h3Probes};
+    }
+
+    /**
+     * HELPER FUNCTION: Reads the strings from a file
+     *
+     * @param fileName - the name of the file to read
+     * @return - an array of strings
+     * @throws IOException - if the file is not found
      */
     public static String[] readStrings(String fileName) throws IOException {
-        List<String> listOfStrings = new ArrayList<String>();
+        List<String> listOfStrings;
 
         // read the strings as an ArrayList
         listOfStrings = Files.readAllLines(Paths.get(fileName));
 
         // convert the ArrayList to a plain Array of Strings
-        String[] array = listOfStrings.toArray(new String[0]);
-
-        return array;
-
+        return listOfStrings.toArray(new String[0]);
     }
 
     /**
@@ -184,20 +267,21 @@ public class HashSimulator {
      */
     public static void main(String[] args) throws IOException {
         HashSimulator hashTable = new HashSimulator();
-        int tableSize = 10;
-//
-//        try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
-//            String line;
-//            while ((line = br.readLine()) != null) {
-//                String input = line.trim();
-//                String[] inputs = {input}; // Wrap the input in an array for runHashSimulation method
-//                hashTable.runHashSimulation(inputs, tableSize);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String[] data;
 
-        String[] data = readStrings(FILENAME);
-//        int[] result = HashSimulator.runHashSimulation(data, data.length);
+        data = readStrings(FILENAME1);
+        int[] result = hashTable.runHashSimulation(data, data.length);
+
+        System.out.println(FILENAME1 + ": [" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ", " + result[4] + ", " + result[5] + "]");
+
+        data = readStrings(FILENAME2);
+        result = hashTable.runHashSimulation(data, data.length);
+
+        System.out.println(FILENAME2 + ": [" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ", " + result[4] + ", " + result[5] + "]");
+
+        data = readStrings(FILENAME3);
+        result = hashTable.runHashSimulation(data, data.length);
+
+        System.out.println(FILENAME3 + ": [" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ", " + result[4] + ", " + result[5] + "]");
     }
 }
